@@ -50,11 +50,6 @@ public class WinChecker {
             sum2 += grid.getCell((SMALL_SIZE - 1) - k, k).getClear();
         }
 
-        // (0, 2), (1, 1), (2, 0)
-
-        System.out.println("dia:     "+sum);
-        System.out.println("antidia: "+sum2);
-
         sum /= SMALL_SIZE;
         sum2 /= SMALL_SIZE;
 
