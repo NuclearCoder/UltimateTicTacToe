@@ -1,13 +1,13 @@
 package ultimatettt.main;
 
-import ultimatettt.model.GameData;
+import ultimatettt.model.Grid;
 
 import static ultimatettt.model.GameData.SIZE;
 
 @SuppressWarnings("Duplicates")
 public class WinChecker {
 
-    public static int checkForWin(GameData.LargeGrid grid) {
+    public static int checkForWin(Grid grid) {
         int row = checkForRow(grid);
         if (row != 0) return row;
         int col = checkForCol(grid);
@@ -15,7 +15,7 @@ public class WinChecker {
         return checkForDia(grid);
     }
 
-    private static int checkForRow(GameData.LargeGrid grid) {
+    private static int checkForRow(Grid grid) {
         for (int row = 0; row < SIZE; row++) {
             int sum = 0;
             for (int col = 0; col < SIZE; col++) {
@@ -29,7 +29,7 @@ public class WinChecker {
         return 0;
     }
 
-    private static int checkForCol(GameData.LargeGrid grid) {
+    private static int checkForCol(Grid grid) {
         for (int col = 0; col < SIZE; col++) {
             int sum = 0;
             for (int row = 0; row < SIZE; row++) {
@@ -43,7 +43,7 @@ public class WinChecker {
         return 0;
     }
 
-    private static int checkForDia(GameData.LargeGrid grid) {
+    private static int checkForDia(Grid grid) {
         int sum = 0;
         int sum2 = 0;
 

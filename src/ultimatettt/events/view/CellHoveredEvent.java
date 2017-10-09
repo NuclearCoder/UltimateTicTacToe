@@ -1,13 +1,11 @@
 package ultimatettt.events.view;
 
-import ultimatettt.model.GameData;
+import ultimatettt.model.Cell;
 
-public interface CellHoveredEvent {
+public class CellHoveredEvent extends GenericCellMouseEvent {
 
-    GameData.Cell getCell();
-    int getLargeRow();
-    int getLargeCol();
-    int getSmallRow();
-    int getSmallCol();
+    public CellHoveredEvent(Cell cell, int largeRow, int largeCol, int smallRow, int smallCol) {
+        super(cell, largeRow, largeCol, smallRow, smallCol);
+    }
 
 }

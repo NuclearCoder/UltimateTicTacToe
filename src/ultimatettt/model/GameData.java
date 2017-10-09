@@ -13,8 +13,8 @@ public final class GameData {
     public static final int FIRST = -1;
     public static final int SECOND = 1;
 
-    private final LargeGrid global;
-    private final LargeGrid[][] largeGrids;
+    private final Grid global;
+    private final Grid[][] grids;
 
     private Cell hovered;
     private CellClickedEvent lastPlayed;
@@ -22,23 +22,23 @@ public final class GameData {
     private int turn;
 
     public GameData() {
-        this.global = new LargeGrid();
-        this.largeGrids = new LargeGrid[SIZE][SIZE];
+        this.global = new Grid();
+        this.grids = new Grid[SIZE][SIZE];
         this.hovered = null;
         this.lastPlayed = null;
         this.turn = FIRST;
         initCells();
     }
 
-    public LargeGrid getLargeGrid(int row, int col) {
-        return largeGrids[row][col];
+    public Grid getGrid(int row, int col) {
+        return grids[row][col];
     }
 
     public Cell getCell(int largeRow, int largeCol, int row, int col) {
-        return largeGrids[largeRow][largeCol].grid[row][col];
+        return grids[largeRow][largeCol].grid[row][col];
     }
 
-    public LargeGrid getGlobal() {
+    public Grid getGlobal() {
         return global;
     }
 
@@ -67,14 +67,14 @@ public final class GameData {
     }
 
     private void initCells() {
-        global.grid = largeGrids;
+        global.grid = grids;
         global.clear = GameData.EMPTY;
 
         int y = GameDisplay.DISPLAY_MARGIN;
         for (int row = 0; row < SIZE; row++) {
             int x = GameDisplay.DISPLAY_MARGIN;
             for (int col = 0; col < SIZE; col++) {
-                LargeGrid cell = this.new LargeGrid();
+                Grid cell = new Grid();
                 cell.clear = GameData.EMPTY;
                 cell.color = GameDisplay.COLOR_EMPTY;
                 cell.rect = new Rectangle(
@@ -83,9 +83,9 @@ public final class GameData {
                         GameDisplay.LARGE_CELL_SIZE + 2 + GameDisplay.WIN_BORDER,
                         GameDisplay.LARGE_CELL_SIZE + 2 + GameDisplay.WIN_BORDER
                 );
-                cell.grid = initLargeGrid(x, y);
+                cell.grid = initGrid(x, y);
 
-                largeGrids[row][col] = cell;
+                grids[row][col] = cell;
 
                 x += GameDisplay.LARGE_CELL_SIZE + GameDisplay.LARGE_BORDER;
             }
@@ -93,7 +93,7 @@ public final class GameData {
         }
     }
 
-    private Cell[][] initLargeGrid(int origX, int y) {
+    private Cell[][] initGrid(int origX, int y) {
         Cell[][] grid = new Cell[SIZE][SIZE];
         int x;
 
@@ -116,53 +116,6 @@ public final class GameData {
         }
 
         return grid;
-    }
-
-    public class Cell {
-        int clear;
-        Color color;
-        Rectangle rect;
-
-        public int getClear() {
-            return clear;
-        }
-
-        public void setClear(int clear) {
-            this.clear = clear;
-            this.color = GameDisplay.getColorFor(clear);
-        }
-
-        public Color getColor() {
-            return color;
-        }
-
-        public int getX() {
-            return rect.x;
-        }
-
-        public int getY() {
-            return rect.y;
-        }
-
-        public int getWidth () {
-            return rect.width;
-        }
-
-        public int getHeight() {
-            return rect.height;
-        }
-
-        public boolean contains(int x, int y) {
-            return rect.contains(x, y);
-        }
-    }
-
-    public class LargeGrid extends Cell {
-        private Cell[][] grid;
-
-        public Cell getCell(int row, int col) {
-            return grid[row][col];
-        }
     }
 
 }

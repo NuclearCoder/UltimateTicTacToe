@@ -2,9 +2,10 @@ package ultimatettt.view;
 
 import ultimatettt.events.view.CellClickedEvent;
 import ultimatettt.events.view.CellHoveredEvent;
-import ultimatettt.events.view.GenericCellMouseEvent;
 import ultimatettt.events.view.ViewMouseListener;
+import ultimatettt.model.Cell;
 import ultimatettt.model.GameData;
+import ultimatettt.model.Grid;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,7 +18,7 @@ import static ultimatettt.view.GameDisplay.*;
 
 public class MouseHandler implements MouseListener, MouseMotionListener {
 
-    public static final CellHoveredEvent DEFAULT_HOVER_EVENT = new GenericCellMouseEvent(null, 0, 0, 0, 0);
+    private static final CellHoveredEvent DEFAULT_HOVER_EVENT = new CellHoveredEvent(null, 0, 0, 0, 0);
 
     private final GameData data;
     private final List<ViewMouseListener> listeners;
@@ -28,32 +29,34 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     }
 
     private void handleClick(int x, int y) {
-        CellClickedEvent cell = getCellAtOrNull(x, y);
-        if (cell == null) return;
-        dispatchEvent(cell);
+        CellData d = getCellDataOrNull(x, y);
+        if (d == null) return;
+        fireClickedEvent(new CellClickedEvent(d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol));
     }
 
     private void handleMove(int x, int y) {
-        CellHoveredEvent cell = getCellAtOrNull(x, y);
-        dispatchEvent(cell != null ? cell : DEFAULT_HOVER_EVENT);
+        CellData d = getCellDataOrNull(x, y);
+        fireHoveredEvent(d == null
+                ? DEFAULT_HOVER_EVENT
+                : new CellHoveredEvent(d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol));
     }
 
-    private GenericCellMouseEvent getCellAtOrNull(int x, int y) {
-        int largeRow = clamp( (y - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), 0, SIZE - 1);
-        int largeCol = clamp((x - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), 0, SIZE - 1);
-        GameData.LargeGrid grid = data.getLargeGrid(largeRow, largeCol);
+    private CellData getCellDataOrNull(int x, int y) {
+        int largeRow = coerceUp( (y - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
+        int largeCol = coerceUp((x - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
+        Grid grid = data.getGrid(largeRow, largeCol);
 
         if (grid.contains(x, y)) {
             int localX = (x - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
             int localY = (y - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
 
-            int smallRow = clamp(localY / (SMALL_CELL_SIZE + SMALL_BORDER), 0, GameData.SIZE - 1);
-            int smallCol = clamp(localX / (SMALL_CELL_SIZE + SMALL_BORDER), 0, GameData.SIZE - 1);
+            int smallRow = coerceUp(localY / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
+            int smallCol = coerceUp(localX / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
 
-            GameData.Cell cell = grid.getCell(smallRow, smallCol);
+            Cell cell = grid.getCell(smallRow, smallCol);
 
             if (cell.contains(x, y)) {
-                return new GenericCellMouseEvent(cell, largeRow, largeCol, smallRow, smallCol);
+                return new CellData(cell, largeRow, largeCol, smallRow, smallCol);
             }
         }
 
@@ -72,20 +75,20 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
         listeners.clear();
     }
 
-    private void dispatchEvent(CellClickedEvent event) {
+    private void fireClickedEvent(CellClickedEvent event) {
         for (ViewMouseListener listener : listeners) {
             listener.onCellClicked(event);
         }
     }
 
-    private void dispatchEvent(CellHoveredEvent event) {
+    private void fireHoveredEvent(CellHoveredEvent event) {
         for (ViewMouseListener listener : listeners) {
             listener.onCellHovered(event);
         }
     }
 
-    private static int clamp(int x, int min, int max) {
-        return Math.max(min, Math.min(max, x));
+    private static int coerceUp(int x, int max) {
+        return Math.max(0, Math.min(max, x));
     }
 
     // mouse methods
@@ -134,6 +137,20 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     @Override
     public void mouseMoved(MouseEvent e) {
         handleMove(e.getX(), e.getY());
+    }
+
+    private static class CellData {
+        Cell cell;
+        int largeRow, largeCol;
+        int smallRow, smallCol;
+
+        CellData(Cell cell, int largeRow, int largeCol, int smallRow, int smallCol) {
+            this.cell = cell;
+            this.largeRow = largeRow;
+            this.largeCol = largeCol;
+            this.smallRow = smallRow;
+            this.smallCol = smallCol;
+        }
     }
 
 }

@@ -3,7 +3,9 @@ package ultimatettt.main;
 import ultimatettt.events.view.CellClickedEvent;
 import ultimatettt.events.view.CellHoveredEvent;
 import ultimatettt.events.view.ViewMouseListener;
+import ultimatettt.model.Cell;
 import ultimatettt.model.GameData;
+import ultimatettt.model.Grid;
 import ultimatettt.view.GameDisplay;
 
 import java.awt.*;
@@ -46,9 +48,9 @@ public class GameLogic implements ViewMouseListener {
     private boolean set(int largeRow, int largeCol, int smallRow, int smallCol, int clear) {
         boolean setLP = true; // whether or not to set the last played event
 
-        GameData.LargeGrid global = data.getGlobal();
-        GameData.LargeGrid grid = data.getLargeGrid(largeRow, largeCol);
-        GameData.Cell cell = grid.getCell(smallRow, smallCol);
+        Grid global = data.getGlobal();
+        Grid grid = data.getGrid(largeRow, largeCol);
+        Cell cell = grid.getCell(smallRow, smallCol);
 
         // set single clear
         cell.setClear(clear);
@@ -86,12 +88,12 @@ public class GameLogic implements ViewMouseListener {
                     && lastPlayed.getSmallCol() == col);
     }
 
-    private boolean isCleared(GameData.Cell cell) {
+    private boolean isCleared(Cell cell) {
         return cell.getClear() != GameData.EMPTY;
     }
 
     private boolean isLargeCleared(int largeRow, int largeCol) {
-        return isCleared(data.getLargeGrid(largeRow, largeCol));
+        return isCleared(data.getGrid(largeRow, largeCol));
     }
 
     private boolean isWon() {
@@ -100,7 +102,7 @@ public class GameLogic implements ViewMouseListener {
 
     @Override
     public void onCellHovered(CellHoveredEvent event) {
-        GameData.Cell cell = event.getCell();
+        Cell cell = event.getCell();
         data.setHovered(cell);
 
         int row = event.getLargeRow();

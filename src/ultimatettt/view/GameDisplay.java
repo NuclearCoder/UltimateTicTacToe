@@ -1,7 +1,9 @@
 package ultimatettt.view;
 
 import ultimatettt.events.view.CellClickedEvent;
+import ultimatettt.model.Cell;
 import ultimatettt.model.GameData;
+import ultimatettt.model.Grid;
 
 import java.awt.*;
 
@@ -45,20 +47,20 @@ public class GameDisplay extends Canvas {
 
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                paintLargeGrid(g2d, data.getLargeGrid(row, col), row, col);
-            } // largeCol
-        } // largeRow
+                paintGrid(g2d, data.getGrid(row, col), row, col);
+            } // col
+        } // row
 
-        GameData.Cell global = data.getGlobal();
+        Cell global = data.getGlobal();
         g2d.setComposite(WIN_FILTER_COMPOSITE);
         g2d.setColor(global.getColor());
         g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    private void paintLargeGrid(Graphics2D g2d, GameData.LargeGrid grid, int largeRow, int largeCol) {
+    private void paintGrid(Graphics2D g2d, Grid grid, int largeRow, int largeCol) {
         for (int row = 0; row < GameData.SIZE; row++) {
             for (int col = 0; col < GameData.SIZE; col++) {
-                GameData.Cell cell = grid.getCell(row, col);
+                Cell cell = grid.getCell(row, col);
 
                 g2d.setColor(cell.getColor());
                 g2d.fillRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
