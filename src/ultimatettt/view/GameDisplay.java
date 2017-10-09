@@ -6,6 +6,7 @@ import ultimatettt.model.GameData;
 import ultimatettt.model.GridData;
 
 import java.awt.*;
+import java.awt.image.BufferStrategy;
 
 import static ultimatettt.model.GameData.SIZE;
 
@@ -29,68 +30,87 @@ public class GameDisplay extends Canvas {
     private static final AlphaComposite WIN_FILTER_COMPOSITE = AlphaComposite.SrcOver.derive(0.5f);
 
     private final GameData data;
+    private BufferStrategy bs;
 
     public GameDisplay(GameData data) {
         this.data = data;
+        this.bs = null;
 
         setSize(new Dimension(DISPLAY_SIZE, DISPLAY_SIZE));
     }
 
     @Override
     public void paint(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+        if (bs == null) {
+            createBufferStrategy(2);
+            bs = getBufferStrategy();
+        }
 
-        g2d.setColor(Color.BLACK);
-        g2d.clearRect(0, 0, getWidth(), getHeight());
+        Graphics2D g2d = null;
+        do {
+            try {
+                g2d = (Graphics2D) bs.getDrawGraphics();
+                draw(g2d);
+            } finally {
+                if (g2d != null)
+                    g2d.dispose();
+            }
+            bs.show();
+        } while (bs.contentsLost());
+    }
+
+    private void draw(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.clearRect(0, 0, getWidth(), getHeight());
 
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                paintGrid(g2d, data.getGrid(row, col), row, col);
+                paintGrid(g, data.getGrid(row, col), row, col);
             } // col
         } // row
 
         CellData global = data.getGlobal();
-        g2d.setComposite(WIN_FILTER_COMPOSITE);
-        g2d.setColor(global.getColor());
-        g2d.fillRect(0, 0, getWidth(), getHeight());
+        g.setComposite(WIN_FILTER_COMPOSITE);
+        g.setColor(global.getColor());
+        g.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    private void paintGrid(Graphics2D g2d, GridData grid, int largeRow, int largeCol) {
+    private void paintGrid(Graphics2D g, GridData grid, int largeRow, int largeCol) {
         for (int row = 0; row < GameData.SIZE; row++) {
             for (int col = 0; col < GameData.SIZE; col++) {
                 CellData cell = grid.getCell(row, col);
                 Rectangle rect = cell.getBounds();
 
-                g2d.setColor(cell.getColor());
-                g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
+                g.setColor(cell.getColor());
+                g.fillRect(rect.x, rect.y, rect.width, rect.height);
 
-                g2d.setColor(Color.BLACK);
-                g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
+                g.setColor(Color.BLACK);
+                g.drawRect(rect.x, rect.y, rect.width, rect.height);
 
                 // use physical equality
                 if (cell == data.getHovered()) {
-                    g2d.setColor(COLOR_HOVER);
-                    g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
+                    g.setColor(COLOR_HOVER);
+                    g.fillRect(rect.x, rect.y, rect.width, rect.height);
                 }
             }
         }
 
         Rectangle rect = grid.getBounds();
 
-        g2d.setComposite(WIN_FILTER_COMPOSITE);
-        g2d.setColor(grid.getColor());
-        g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
-        g2d.setComposite(AlphaComposite.SrcOver);
+        g.setComposite(WIN_FILTER_COMPOSITE);
+        g.setColor(grid.getColor());
+        g.fillRect(rect.x, rect.y, rect.width, rect.height);
+        g.setComposite(AlphaComposite.SrcOver);
 
         CellClickedEvent lastPlayed = data.getLastPlayed();
         if (lastPlayed != null
                 && lastPlayed.getSmallRow() == largeRow
                 && lastPlayed.getSmallCol() == largeCol) {
-            Stroke stroke = g2d.getStroke();
-            g2d.setStroke(new BasicStroke(2f));
-            g2d.setColor(Color.BLACK);
-            g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
-            g2d.setStroke(stroke);
+            Stroke stroke = g.getStroke();
+            g.setStroke(new BasicStroke(2f));
+            g.setColor(Color.BLACK);
+            g.drawRect(rect.x, rect.y, rect.width, rect.height);
+            g.setStroke(stroke);
         }
     }
 
