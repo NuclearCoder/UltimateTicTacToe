@@ -7,7 +7,7 @@ import ultimatettt.view.MouseHandler;
 import javax.swing.*;
 import java.awt.*;
 
-public class Main {
+class Main {
 
     public static void main(String[] args) {
         GameData data = new GameData();

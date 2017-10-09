@@ -140,9 +140,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     }
 
     private static class CellData {
-        Cell cell;
-        int largeRow, largeCol;
-        int smallRow, smallCol;
+        private final Cell cell;
+        private final int largeRow, largeCol;
+        private final int smallRow, smallCol;
 
         CellData(Cell cell, int largeRow, int largeCol, int smallRow, int smallCol) {
             this.cell = cell;

@@ -11,11 +11,11 @@ import static ultimatettt.model.GameData.SIZE;
 
 public class GameDisplay extends Canvas {
 
-    public static final Color COLOR_HOVER = new Color(0, 0, 0, 50);
+    private static final Color COLOR_HOVER = new Color(0, 0, 0, 50);
 
     public static final Color COLOR_EMPTY = new Color(0, 0, 0, 0);
-    public static final Color COLOR_FIRST = new Color(59, 215, 255);
-    public static final Color COLOR_SECOND = new Color(255, 94, 87);
+    private static final Color COLOR_FIRST = new Color(59, 215, 255);
+    private static final Color COLOR_SECOND = new Color(255, 94, 87);
 
     public static final int SMALL_BORDER = 4;
     public static final int SMALL_CELL_SIZE = 32;

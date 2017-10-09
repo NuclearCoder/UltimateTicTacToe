@@ -5,9 +5,9 @@ import ultimatettt.model.Grid;
 import static ultimatettt.model.GameData.SIZE;
 
 @SuppressWarnings("Duplicates")
-public class WinChecker {
+class WinChecker {
 
-    public static int checkForWin(Grid grid) {
+    static int checkForWin(Grid grid) {
         int row = checkForRow(grid);
         if (row != 0) return row;
         int col = checkForCol(grid);

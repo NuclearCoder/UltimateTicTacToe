@@ -34,10 +34,6 @@ public final class GameData {
         return grids[row][col];
     }
 
-    public Cell getCell(int largeRow, int largeCol, int row, int col) {
-        return grids[largeRow][largeCol].grid[row][col];
-    }
-
     public Grid getGlobal() {
         return global;
     }
