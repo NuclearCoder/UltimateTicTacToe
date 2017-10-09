@@ -17,10 +17,12 @@ public class GameDisplay extends Canvas {
     public static final int SMALL_CELL_SIZE = 32;
 
     public static final int LARGE_BORDER = 8;
-    public static final int LARGE_CELL_SIZE = GameData.SIZE * (SMALL_CELL_SIZE + SMALL_BORDER) - SMALL_BORDER;
+    public static final int LARGE_CELL_SIZE = SIZE * (SMALL_CELL_SIZE + SMALL_BORDER) - SMALL_BORDER;
+
+    private static final int BOARD_SIZE = SIZE * (LARGE_CELL_SIZE + LARGE_BORDER) - LARGE_BORDER;
 
     public static final int DISPLAY_MARGIN = 8;
-    public static final int DISPLAY_SIZE = SIZE * (LARGE_CELL_SIZE + LARGE_BORDER) + DISPLAY_MARGIN;
+    private static final int DISPLAY_SIZE = BOARD_SIZE + 2 * DISPLAY_MARGIN;
 
     public static final int WIN_BORDER = LARGE_BORDER / 2;
 
