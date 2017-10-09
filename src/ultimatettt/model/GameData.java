@@ -9,36 +9,32 @@ public final class GameData {
 
     public static final int SIZE = 3;
 
-    public static final int EMPTY = 0;
-    public static final int FIRST = -1;
-    public static final int SECOND = 1;
+    private final GridData global;
+    private final GridData[][] grids;
 
-    private final Grid global;
-    private final Grid[][] grids;
-
-    private Cell hovered;
+    private CellData hovered;
     private CellClickedEvent lastPlayed;
 
-    private int turn;
+    private Clear turn;
 
     public GameData() {
-        this.global = new Grid();
-        this.grids = new Grid[SIZE][SIZE];
+        this.global = new GridData();
+        this.grids = new GridData[SIZE][SIZE];
         this.hovered = null;
         this.lastPlayed = null;
-        this.turn = FIRST;
+        this.turn = Clear.FIRST;
         initCells();
     }
 
-    public Grid getGrid(int row, int col) {
+    public GridData getGrid(int row, int col) {
         return grids[row][col];
     }
 
-    public Grid getGlobal() {
+    public GridData getGlobal() {
         return global;
     }
 
-    public Cell getHovered() {
+    public CellData getHovered() {
         return hovered;
     }
 
@@ -46,12 +42,12 @@ public final class GameData {
         return lastPlayed;
     }
 
-    public int getTurn() {
-        return turn;
+    public void setHovered(CellData cell) {
+        this.hovered = cell;
     }
 
-    public void setHovered(Cell cell) {
-        this.hovered = cell;
+    public Clear getTurn() {
+        return turn;
     }
 
     public void setLastPlayed(CellClickedEvent lastPlayed) {
@@ -59,20 +55,19 @@ public final class GameData {
     }
 
     public void nextTurn() {
-        this.turn = (turn == FIRST ? SECOND : FIRST);
+        this.turn = (turn == Clear.FIRST ? Clear.SECOND : Clear.FIRST);
     }
 
     private void initCells() {
         global.grid = grids;
-        global.clear = GameData.EMPTY;
+        global.clear = Clear.EMPTY;
 
         int y = GameDisplay.DISPLAY_MARGIN;
         for (int row = 0; row < SIZE; row++) {
             int x = GameDisplay.DISPLAY_MARGIN;
             for (int col = 0; col < SIZE; col++) {
-                Grid cell = new Grid();
-                cell.clear = GameData.EMPTY;
-                cell.color = GameDisplay.COLOR_EMPTY;
+                GridData cell = new GridData();
+                cell.clear = Clear.EMPTY;
                 cell.rect = new Rectangle(
                         x - 1 - GameDisplay.WIN_BORDER / 2,
                         y - 1 - GameDisplay.WIN_BORDER / 2,
@@ -89,16 +84,15 @@ public final class GameData {
         }
     }
 
-    private Cell[][] initGrid(int origX, int y) {
-        Cell[][] grid = new Cell[SIZE][SIZE];
+    private CellData[][] initGrid(int origX, int y) {
+        CellData[][] grid = new CellData[SIZE][SIZE];
         int x;
 
         for (int row = 0; row < SIZE; row++) {
             x = origX;
             for (int col = 0; col < SIZE; col++) {
-                Cell cell = new Cell();
-                cell.clear = GameData.EMPTY;
-                cell.color = GameDisplay.COLOR_EMPTY;
+                CellData cell = new CellData();
+                cell.clear = Clear.EMPTY;
                 cell.rect = new Rectangle(
                         x - 1, y - 1,
                         GameDisplay.SMALL_CELL_SIZE + 1, GameDisplay.SMALL_CELL_SIZE + 1

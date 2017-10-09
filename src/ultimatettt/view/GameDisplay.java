@@ -1,9 +1,9 @@
 package ultimatettt.view;
 
 import ultimatettt.events.view.CellClickedEvent;
-import ultimatettt.model.Cell;
+import ultimatettt.model.CellData;
 import ultimatettt.model.GameData;
-import ultimatettt.model.Grid;
+import ultimatettt.model.GridData;
 
 import java.awt.*;
 
@@ -12,10 +12,6 @@ import static ultimatettt.model.GameData.SIZE;
 public class GameDisplay extends Canvas {
 
     private static final Color COLOR_HOVER = new Color(0, 0, 0, 50);
-
-    public static final Color COLOR_EMPTY = new Color(0, 0, 0, 0);
-    private static final Color COLOR_FIRST = new Color(59, 215, 255);
-    private static final Color COLOR_SECOND = new Color(255, 94, 87);
 
     public static final int SMALL_BORDER = 4;
     public static final int SMALL_CELL_SIZE = 32;
@@ -51,34 +47,37 @@ public class GameDisplay extends Canvas {
             } // col
         } // row
 
-        Cell global = data.getGlobal();
+        CellData global = data.getGlobal();
         g2d.setComposite(WIN_FILTER_COMPOSITE);
         g2d.setColor(global.getColor());
         g2d.fillRect(0, 0, getWidth(), getHeight());
     }
 
-    private void paintGrid(Graphics2D g2d, Grid grid, int largeRow, int largeCol) {
+    private void paintGrid(Graphics2D g2d, GridData grid, int largeRow, int largeCol) {
         for (int row = 0; row < GameData.SIZE; row++) {
             for (int col = 0; col < GameData.SIZE; col++) {
-                Cell cell = grid.getCell(row, col);
+                CellData cell = grid.getCell(row, col);
+                Rectangle rect = cell.getBounds();
 
                 g2d.setColor(cell.getColor());
-                g2d.fillRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
+                g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
 
                 g2d.setColor(Color.BLACK);
-                g2d.drawRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
+                g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
 
                 // use physical equality
                 if (cell == data.getHovered()) {
                     g2d.setColor(COLOR_HOVER);
-                    g2d.fillRect(cell.getX(), cell.getY(), cell.getWidth(), cell.getHeight());
+                    g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
                 }
             }
         }
 
+        Rectangle rect = grid.getBounds();
+
         g2d.setComposite(WIN_FILTER_COMPOSITE);
         g2d.setColor(grid.getColor());
-        g2d.fillRect(grid.getX(), grid.getY(), grid.getWidth(), grid.getHeight());
+        g2d.fillRect(rect.x, rect.y, rect.width, rect.height);
         g2d.setComposite(AlphaComposite.SrcOver);
 
         CellClickedEvent lastPlayed = data.getLastPlayed();
@@ -88,21 +87,8 @@ public class GameDisplay extends Canvas {
             Stroke stroke = g2d.getStroke();
             g2d.setStroke(new BasicStroke(2f));
             g2d.setColor(Color.BLACK);
-            g2d.drawRect(grid.getX(), grid.getY(), grid.getWidth(), grid.getHeight());
+            g2d.drawRect(rect.x, rect.y, rect.width, rect.height);
             g2d.setStroke(stroke);
-        }
-    }
-
-    public static Color getColorFor(int clear) {
-        switch (clear) {
-            case GameData.EMPTY:
-                return COLOR_EMPTY;
-            case GameData.FIRST:
-                return COLOR_FIRST;
-            case GameData.SECOND:
-                return COLOR_SECOND;
-            default:
-                throw new IllegalArgumentException("Unexpected grid value");
         }
     }
 

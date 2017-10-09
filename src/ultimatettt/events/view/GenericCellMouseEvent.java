@@ -1,18 +1,18 @@
 package ultimatettt.events.view;
 
-import ultimatettt.model.Cell;
+import ultimatettt.model.CellData;
 
 abstract class GenericCellMouseEvent {
 
-    private final Cell cell;
+    private final CellData cell;
     private final int largeRow;
     private final int largeCol;
     private final int smallRow;
     private final int smallCol;
 
-    GenericCellMouseEvent(Cell cell,
-                                 int largeRow, int largeCol,
-                                 int smallRow, int smallCol) {
+    GenericCellMouseEvent(CellData cell,
+                          int largeRow, int largeCol,
+                          int smallRow, int smallCol) {
         this.cell = cell;
         this.largeRow = largeRow;
         this.largeCol = largeCol;
@@ -20,7 +20,7 @@ abstract class GenericCellMouseEvent {
         this.smallCol = smallCol;
     }
 
-    public Cell getCell() {
+    public CellData getCell() {
         return cell;
     }
 

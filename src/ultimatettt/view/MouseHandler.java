@@ -3,9 +3,9 @@ package ultimatettt.view;
 import ultimatettt.events.view.CellClickedEvent;
 import ultimatettt.events.view.CellHoveredEvent;
 import ultimatettt.events.view.ViewMouseListener;
-import ultimatettt.model.Cell;
+import ultimatettt.model.CellData;
 import ultimatettt.model.GameData;
-import ultimatettt.model.Grid;
+import ultimatettt.model.GridData;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -29,22 +29,22 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     }
 
     private void handleClick(int x, int y) {
-        CellData d = getCellDataOrNull(x, y);
+        EventData d = getCellDataOrNull(x, y);
         if (d == null) return;
         fireClickedEvent(new CellClickedEvent(d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol));
     }
 
     private void handleMove(int x, int y) {
-        CellData d = getCellDataOrNull(x, y);
+        EventData d = getCellDataOrNull(x, y);
         fireHoveredEvent(d == null
                 ? DEFAULT_HOVER_EVENT
                 : new CellHoveredEvent(d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol));
     }
 
-    private CellData getCellDataOrNull(int x, int y) {
+    private EventData getCellDataOrNull(int x, int y) {
         int largeRow = coerceUp( (y - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
         int largeCol = coerceUp((x - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
-        Grid grid = data.getGrid(largeRow, largeCol);
+        GridData grid = data.getGrid(largeRow, largeCol);
 
         if (grid.contains(x, y)) {
             int localX = (x - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
@@ -53,10 +53,10 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
             int smallRow = coerceUp(localY / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
             int smallCol = coerceUp(localX / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
 
-            Cell cell = grid.getCell(smallRow, smallCol);
+            ultimatettt.model.CellData cell = grid.getCell(smallRow, smallCol);
 
             if (cell.contains(x, y)) {
-                return new CellData(cell, largeRow, largeCol, smallRow, smallCol);
+                return new EventData(cell, largeRow, largeCol, smallRow, smallCol);
             }
         }
 
@@ -139,12 +139,12 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
         handleMove(e.getX(), e.getY());
     }
 
-    private static class CellData {
-        private final Cell cell;
+    private static class EventData {
+        private final CellData cell;
         private final int largeRow, largeCol;
         private final int smallRow, smallCol;
 
-        CellData(Cell cell, int largeRow, int largeCol, int smallRow, int smallCol) {
+        EventData(CellData cell, int largeRow, int largeCol, int smallRow, int smallCol) {
             this.cell = cell;
             this.largeRow = largeRow;
             this.largeCol = largeCol;
