@@ -7,8 +7,7 @@ import java.awt.*;
 
 public final class GameData {
 
-    public static final int LARGE_SIZE = 3;
-    public static final int SMALL_SIZE = 3;
+    public static final int SIZE = 3;
 
     public static final int EMPTY = 0;
     public static final int FIRST = -1;
@@ -24,7 +23,7 @@ public final class GameData {
 
     public GameData() {
         this.global = new LargeGrid();
-        this.largeGrids = new LargeGrid[LARGE_SIZE][LARGE_SIZE];
+        this.largeGrids = new LargeGrid[SIZE][SIZE];
         this.hovered = null;
         this.lastPlayed = null;
         this.turn = FIRST;
@@ -72,9 +71,9 @@ public final class GameData {
         global.clear = GameData.EMPTY;
 
         int y = GameDisplay.DISPLAY_MARGIN;
-        for (int row = 0; row < LARGE_SIZE; row++) {
+        for (int row = 0; row < SIZE; row++) {
             int x = GameDisplay.DISPLAY_MARGIN;
-            for (int col = 0; col < LARGE_SIZE; col++) {
+            for (int col = 0; col < SIZE; col++) {
                 LargeGrid cell = this.new LargeGrid();
                 cell.clear = GameData.EMPTY;
                 cell.color = GameDisplay.COLOR_EMPTY;
@@ -95,12 +94,12 @@ public final class GameData {
     }
 
     private Cell[][] initLargeGrid(int origX, int y) {
-        Cell[][] grid = new Cell[SMALL_SIZE][SMALL_SIZE];
+        Cell[][] grid = new Cell[SIZE][SIZE];
         int x;
 
-        for (int row = 0; row < SMALL_SIZE; row++) {
+        for (int row = 0; row < SIZE; row++) {
             x = origX;
-            for (int col = 0; col < SMALL_SIZE; col++) {
+            for (int col = 0; col < SIZE; col++) {
                 Cell cell = new Cell();
                 cell.clear = GameData.EMPTY;
                 cell.color = GameDisplay.COLOR_EMPTY;

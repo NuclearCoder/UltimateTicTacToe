@@ -6,16 +6,13 @@ import ultimatettt.events.view.GenericCellMouseEvent;
 import ultimatettt.events.view.ViewMouseListener;
 import ultimatettt.model.GameData;
 
-import javax.xml.bind.annotation.XmlType;
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static ultimatettt.model.GameData.LARGE_SIZE;
-import static ultimatettt.model.GameData.SMALL_SIZE;
+import static ultimatettt.model.GameData.SIZE;
 import static ultimatettt.view.GameDisplay.*;
 
 public class MouseHandler implements MouseListener, MouseMotionListener {
@@ -28,7 +25,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     public MouseHandler(GameData data) {
         this.data = data;
         this.listeners = new CopyOnWriteArrayList<>();
-
     }
 
     private void handleClick(int x, int y) {
@@ -43,16 +39,16 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     }
 
     private GenericCellMouseEvent getCellAtOrNull(int x, int y) {
-        int largeRow = clamp( (y - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), 0, LARGE_SIZE - 1);
-        int largeCol = clamp((x - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), 0, LARGE_SIZE - 1);
+        int largeRow = clamp( (y - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), 0, SIZE - 1);
+        int largeCol = clamp((x - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), 0, SIZE - 1);
         GameData.LargeGrid grid = data.getLargeGrid(largeRow, largeCol);
 
         if (grid.contains(x, y)) {
             int localX = (x - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
             int localY = (y - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
 
-            int smallRow = clamp(localY / (SMALL_CELL_SIZE + SMALL_BORDER), 0, SMALL_SIZE - 1);
-            int smallCol = clamp(localX / (SMALL_CELL_SIZE + SMALL_BORDER), 0, SMALL_SIZE - 1);
+            int smallRow = clamp(localY / (SMALL_CELL_SIZE + SMALL_BORDER), 0, GameData.SIZE - 1);
+            int smallCol = clamp(localX / (SMALL_CELL_SIZE + SMALL_BORDER), 0, GameData.SIZE - 1);
 
             GameData.Cell cell = grid.getCell(smallRow, smallCol);
 
@@ -96,20 +92,26 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        CellClickedEvent cell = getCellAtOrNull(e.getX(), e.getY());
-        if (cell == null) return;
-
-        dispatchEvent(cell);
+        int x = e.getX();
+        int y = e.getY();
+        handleMove(x, y);
+        handleClick(x, y);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        handleMove(e.getX(), e.getY());
+        int x = e.getX();
+        int y = e.getY();
+        handleMove(x, y);
+        handleClick(x, y);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        handleClick(e.getX(), e.getY());
+        int x = e.getX();
+        int y = e.getY();
+        handleMove(x, y);
+        handleClick(x, y);
     }
 
     @Override

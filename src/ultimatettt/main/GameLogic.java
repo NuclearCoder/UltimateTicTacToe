@@ -4,7 +4,6 @@ import ultimatettt.events.view.CellClickedEvent;
 import ultimatettt.events.view.CellHoveredEvent;
 import ultimatettt.events.view.ViewMouseListener;
 import ultimatettt.model.GameData;
-import ultimatettt.model.GameModel;
 import ultimatettt.view.GameDisplay;
 
 import java.awt.*;
@@ -12,50 +11,79 @@ import java.awt.*;
 public class GameLogic implements ViewMouseListener {
 
     private final GameData data;
-    private final GameModel model;
     private final GameDisplay display;
 
-    public GameLogic(GameData data, GameModel model, GameDisplay display) {
+    public GameLogic(GameData data, GameDisplay display) {
         this.data = data;
-        this.model = model;
         this.display = display;
     }
 
     @Override
     public void onCellClicked(CellClickedEvent event) {
+        // if the game is already won, no point is processing anything
+        if (isWon()) return;
+
         int largeRow = event.getLargeRow();
         int largeCol = event.getLargeCol();
+        int smallRow = event.getSmallRow();
+        int smallCol = event.getSmallCol();
 
-        if (isPlacedRight(event)
+        if (isPlacedRight(largeRow, largeCol)
                 && !isLargeCleared(largeRow, largeCol)
                 && !isCleared(event.getCell())) {
 
-            int smallRow = event.getSmallRow();
-            int smallCol = event.getSmallCol();
-
-            model.set(largeRow, largeCol, smallRow, smallCol, data.getTurn());
-
-            CellClickedEvent nextLastPlayed;
-            if (isLargeCleared(smallRow, smallCol)) {
-                // if they get sent to a cleared cell,
-                // then they get to choose next turn
-                nextLastPlayed = null;
-            } else {
-                nextLastPlayed = event;
+            boolean doSetLP = set(largeRow, largeCol, smallRow, smallCol, data.getTurn());
+            if (doSetLP) {
+                data.setLastPlayed(event);
             }
 
-            data.setLastPlayed(nextLastPlayed);
             data.nextTurn();
 
             display.repaint();
         }
     }
 
-    private boolean isPlacedRight(CellClickedEvent current) {
+    private boolean set(int largeRow, int largeCol, int smallRow, int smallCol, int clear) {
+        boolean setLP = true; // whether or not to set the last played event
+
+        GameData.LargeGrid global = data.getGlobal();
+        GameData.LargeGrid grid = data.getLargeGrid(largeRow, largeCol);
+        GameData.Cell cell = grid.getCell(smallRow, smallCol);
+
+        // set single clear
+        cell.setClear(clear);
+        // if the destination cell is cleared, un-set last played
+        if (isLargeCleared(smallRow, smallCol)) {
+            data.setLastPlayed(null);
+            setLP = false;
+        }
+
+        // set cell clear
+        int largeClear = WinChecker.checkForWin(grid);
+        grid.setClear(largeClear);
+        // if it did clear, un-set last played
+        if (largeClear != GameData.EMPTY) {
+            data.setLastPlayed(null);
+            setLP = false;
+        }
+
+        // set global clear
+        int globalClear = WinChecker.checkForWin(global);
+        global.setClear(globalClear);
+        // if it did clear, un-set last played
+        if (globalClear != GameData.EMPTY) {
+            data.setLastPlayed(null);
+            setLP = false;
+        }
+
+        return setLP;
+    }
+
+    private boolean isPlacedRight(int row, int col) {
         CellClickedEvent lastPlayed = data.getLastPlayed();
         return lastPlayed == null
-                || (lastPlayed.getSmallRow() == current.getLargeRow()
-                    && lastPlayed.getSmallCol() == current.getLargeCol());
+                || (lastPlayed.getSmallRow() == row
+                    && lastPlayed.getSmallCol() == col);
     }
 
     private boolean isCleared(GameData.Cell cell) {
@@ -66,14 +94,26 @@ public class GameLogic implements ViewMouseListener {
         return isCleared(data.getLargeGrid(largeRow, largeCol));
     }
 
+    private boolean isWon() {
+        return isCleared(data.getGlobal());
+    }
+
     @Override
     public void onCellHovered(CellHoveredEvent event) {
         GameData.Cell cell = event.getCell();
         data.setHovered(cell);
 
-        display.setCursor(Cursor.getPredefinedCursor(
-                (cell != null && cell.getClear() == GameData.EMPTY)
-                        ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
+        int row = event.getLargeRow();
+        int col = event.getLargeCol();
+
+        if (cell == null
+                || isWon()
+                || !isPlacedRight(row, col)
+                || isCleared(cell)) {
+            display.setCursor(Cursor.getDefaultCursor());
+        } else {
+            display.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
 
         display.repaint();
     }
