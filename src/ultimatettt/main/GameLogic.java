@@ -97,7 +97,7 @@ class GameLogic implements ViewMouseListener {
         CellClickedEvent lastPlayed = data.getLastPlayed();
         return lastPlayed == null
                 || (lastPlayed.getSmallRow() == row
-                    && lastPlayed.getSmallCol() == col);
+                && lastPlayed.getSmallCol() == col);
     }
 
     private boolean isCleared(CellData cell) {

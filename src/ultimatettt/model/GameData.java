@@ -38,20 +38,20 @@ public final class GameData {
         return hovered;
     }
 
-    public CellClickedEvent getLastPlayed() {
-        return lastPlayed;
-    }
-
     public void setHovered(CellData cell) {
         this.hovered = cell;
     }
 
-    public Clear getTurn() {
-        return turn;
+    public CellClickedEvent getLastPlayed() {
+        return lastPlayed;
     }
 
     public void setLastPlayed(CellClickedEvent lastPlayed) {
         this.lastPlayed = lastPlayed;
+    }
+
+    public Clear getTurn() {
+        return turn;
     }
 
     public void nextTurn() {
