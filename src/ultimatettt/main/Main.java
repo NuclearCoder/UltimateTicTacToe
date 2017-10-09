@@ -20,6 +20,8 @@ class Main {
 
         mouseHandler.addListener(logic);
 
+        // TODO: hook up AI
+
         JFrame frame = new JFrame("Ultimate Tic Tac Toe");
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         frame.setLocationRelativeTo(null);

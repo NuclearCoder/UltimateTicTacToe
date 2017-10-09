@@ -79,6 +79,17 @@ class GameLogic implements ViewMouseListener {
             setLP = false;
         }
 
+        //  check for a draw:
+
+        // if that move cleared large grid and all cells are cleared without a win
+        // or it didn't clear but the cell is full
+        if ((largeClear != Clear.EMPTY && global.getUnclearedCells() == 0 && globalClear == Clear.EMPTY)
+                || (global.getUnclearedCells() == 1 && grid.getUnclearedCells() == 0)) {
+            global.setClear(Clear.DRAW);
+            data.setLastPlayed(null);
+            setLP = false;
+        }
+
         return setLP;
     }
 
@@ -109,12 +120,18 @@ class GameLogic implements ViewMouseListener {
         int row = event.getLargeRow();
         int col = event.getLargeCol();
 
+        // if we're not selecting a cell,
+        // or the game has already been won,
+        // or we aren't in the correct grid,
+        // or the cell has already been cleared,
         if (cell == null
                 || isWon()
                 || !isPlacedRight(row, col)
                 || isCleared(cell)) {
+            // then set default cursor
             display.setCursor(Cursor.getDefaultCursor());
         } else {
+            // otherwise, set hand cursor
             display.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
 

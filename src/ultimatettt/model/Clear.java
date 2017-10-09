@@ -6,7 +6,9 @@ public enum Clear {
 
     FIRST(-1, new Color(59, 215, 255)),
     EMPTY(0, new Color(0, 0, 0, 0)),
-    SECOND(1, new Color(255, 94, 87));
+    SECOND(1, new Color(255, 94, 87)),
+
+    DRAW(2, new Color(0, 0, 0));
 
     public final int value;
     public final Color color;
