@@ -5,12 +5,15 @@ import ultimatettt.model.CellData;
 import ultimatettt.model.GameData;
 import ultimatettt.model.GridData;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferStrategy;
 
 import static ultimatettt.model.GameData.SIZE;
 
-public class GameDisplay extends Canvas {
+/**
+ * Game display Swing component
+ */
+public class GameDisplay extends JComponent {
 
     private static final Color COLOR_HOVER = new Color(0, 0, 0, 50);
 
@@ -27,36 +30,25 @@ public class GameDisplay extends Canvas {
 
     public static final int WIN_BORDER = LARGE_BORDER / 2;
 
+    private static final Dimension PREFERRED_SIZE = new Dimension(DISPLAY_SIZE, DISPLAY_SIZE);
     private static final AlphaComposite WIN_FILTER_COMPOSITE = AlphaComposite.SrcOver.derive(0.5f);
 
     private final GameData data;
-    private BufferStrategy bs;
 
     public GameDisplay(GameData data) {
         this.data = data;
-        this.bs = null;
 
-        setSize(new Dimension(DISPLAY_SIZE, DISPLAY_SIZE));
+        setDoubleBuffered(true);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return PREFERRED_SIZE;
     }
 
     @Override
     public void paint(Graphics g) {
-        if (bs == null) {
-            createBufferStrategy(2);
-            bs = getBufferStrategy();
-        }
-
-        Graphics2D g2d = null;
-        do {
-            try {
-                g2d = (Graphics2D) bs.getDrawGraphics();
-                draw(g2d);
-            } finally {
-                if (g2d != null)
-                    g2d.dispose();
-            }
-            bs.show();
-        } while (bs.contentsLost());
+        draw((Graphics2D) g);
     }
 
     private void draw(Graphics2D g) {

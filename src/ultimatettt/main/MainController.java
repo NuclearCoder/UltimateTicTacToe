@@ -1,16 +1,20 @@
 package ultimatettt.main;
 
 import ultimatettt.model.GameData;
+import ultimatettt.model.GameDataFactory;
 import ultimatettt.view.GameDisplay;
 import ultimatettt.view.MouseHandler;
 
 import javax.swing.*;
 import java.awt.*;
 
-class Main {
+/**
+ * Main controller class.
+ */
+public class MainController {
 
-    public static void main(String[] args) {
-        GameData data = new GameData();
+    public MainController() {
+        GameData data = GameDataFactory.createGameData();
         GameDisplay display = new GameDisplay(data);
         GameLogic logic = new GameLogic(data, display);
 

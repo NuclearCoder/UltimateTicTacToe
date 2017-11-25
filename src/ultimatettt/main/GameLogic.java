@@ -11,6 +11,9 @@ import ultimatettt.view.GameDisplay;
 
 import java.awt.*;
 
+/**
+ * Class implementing actual game logic
+ */
 class GameLogic implements ViewMouseListener {
 
     private final GameData data;
