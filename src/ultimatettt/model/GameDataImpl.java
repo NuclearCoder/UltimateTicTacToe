@@ -1,9 +1,8 @@
 package ultimatettt.model;
 
-import ultimatettt.events.view.CellClickedEvent;
-import ultimatettt.view.GameDisplay;
-
 import java.awt.*;
+
+import static ultimatettt.GameConstants.*;
 
 final class GameDataImpl implements GameData {
 
@@ -11,16 +10,16 @@ final class GameDataImpl implements GameData {
     private final GridData[][] grids;
 
     private CellData hovered;
-    private CellClickedEvent lastPlayed;
 
     private Clear turn;
+    private TurnData lastTurn;
 
-    public GameDataImpl() {
+    GameDataImpl() {
         this.grids = new GridData[SIZE][SIZE];
         this.global = new GridData(null, grids);
         this.hovered = null;
-        this.lastPlayed = null;
         this.turn = Clear.FIRST;
+        this.lastTurn = null;
         initCells();
     }
 
@@ -45,40 +44,36 @@ final class GameDataImpl implements GameData {
     }
 
     @Override
-    public CellClickedEvent getLastPlayed() {
-        return lastPlayed;
-    }
-
-    @Override
-    public void setLastPlayed(CellClickedEvent lastPlayed) {
-        this.lastPlayed = lastPlayed;
-    }
-
-    @Override
     public Clear getTurn() {
         return turn;
     }
 
     @Override
-    public void nextTurn() {
+    public TurnData getLastTurn() {
+        return lastTurn;
+    }
+
+    @Override
+    public void nextTurn(TurnData turnData) {
         this.turn = (turn == Clear.FIRST ? Clear.SECOND : Clear.FIRST);
+        this.lastTurn = turnData;
     }
 
     private void initCells() {
-        int y = GameDisplay.DISPLAY_MARGIN;
+        int y = DISPLAY_MARGIN;
         for (int row = 0; row < SIZE; row++) {
-            int x = GameDisplay.DISPLAY_MARGIN;
+            int x = DISPLAY_MARGIN;
             for (int col = 0; col < SIZE; col++) {
                 grids[row][col] = new GridData(new Rectangle(
-                        x - 1 - GameDisplay.WIN_BORDER / 2,
-                        y - 1 - GameDisplay.WIN_BORDER / 2,
-                        GameDisplay.LARGE_CELL_SIZE + 2 + GameDisplay.WIN_BORDER,
-                        GameDisplay.LARGE_CELL_SIZE + 2 + GameDisplay.WIN_BORDER
+                        x - 1 - WIN_BORDER / 2,
+                        y - 1 - WIN_BORDER / 2,
+                        LARGE_CELL_SIZE + 2 + WIN_BORDER,
+                        LARGE_CELL_SIZE + 2 + WIN_BORDER
                 ), initGrid(x, y));
 
-                x += GameDisplay.LARGE_CELL_SIZE + GameDisplay.LARGE_BORDER;
+                x += LARGE_CELL_SIZE + LARGE_BORDER;
             }
-            y += GameDisplay.LARGE_CELL_SIZE + GameDisplay.LARGE_BORDER;
+            y += LARGE_CELL_SIZE + LARGE_BORDER;
         }
     }
 
@@ -90,12 +85,12 @@ final class GameDataImpl implements GameData {
             for (int col = 0; col < SIZE; col++) {
                 grid[row][col] = new CellData(new Rectangle(
                         x - 1, y - 1,
-                        GameDisplay.SMALL_CELL_SIZE + 1, GameDisplay.SMALL_CELL_SIZE + 1
+                        SMALL_CELL_SIZE + 1, SMALL_CELL_SIZE + 1
                 ));
 
-                x += GameDisplay.SMALL_CELL_SIZE + GameDisplay.SMALL_BORDER;
+                x += SMALL_CELL_SIZE + SMALL_BORDER;
             }
-            y += GameDisplay.SMALL_CELL_SIZE + GameDisplay.SMALL_BORDER;
+            y += SMALL_CELL_SIZE + SMALL_BORDER;
         }
 
         return grid;

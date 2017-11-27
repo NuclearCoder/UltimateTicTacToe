@@ -1,6 +1,6 @@
 package ultimatettt;
 
-import ultimatettt.main.MainController;
+import ultimatettt.controller.MainController;
 
 import javax.swing.*;
 

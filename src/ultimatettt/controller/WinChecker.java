@@ -1,9 +1,9 @@
-package ultimatettt.main;
+package ultimatettt.controller;
 
 import ultimatettt.model.Clear;
 import ultimatettt.model.GridData;
 
-import static ultimatettt.model.GameData.SIZE;
+import static ultimatettt.GameConstants.SIZE;
 
 /**
  * Utility class to check whether a grid has been won or not.

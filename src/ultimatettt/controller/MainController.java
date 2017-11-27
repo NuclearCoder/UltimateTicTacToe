@@ -1,4 +1,4 @@
-package ultimatettt.main;
+package ultimatettt.controller;
 
 import ultimatettt.model.GameData;
 import ultimatettt.model.GameDataFactory;
@@ -16,7 +16,7 @@ public class MainController {
     public MainController() {
         GameData data = GameDataFactory.createGameData();
         GameDisplay display = new GameDisplay(data);
-        GameLogic logic = new GameLogic(data, display);
+        GameController logic = new GameControllerImpl(data, display);
 
         MouseHandler mouseHandler = new MouseHandler(data);
         display.addMouseListener(mouseHandler);

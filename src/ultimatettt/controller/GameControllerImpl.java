@@ -1,12 +1,11 @@
-package ultimatettt.main;
+package ultimatettt.controller;
 
+import ultimatettt.events.game.GameTurnEvent;
+import ultimatettt.events.game.GlobalWinEvent;
+import ultimatettt.events.game.GridWinEvent;
 import ultimatettt.events.view.CellClickedEvent;
 import ultimatettt.events.view.CellHoveredEvent;
-import ultimatettt.events.view.ViewMouseListener;
-import ultimatettt.model.CellData;
-import ultimatettt.model.Clear;
-import ultimatettt.model.GameData;
-import ultimatettt.model.GridData;
+import ultimatettt.model.*;
 import ultimatettt.view.GameDisplay;
 
 import java.awt.*;
@@ -14,12 +13,14 @@ import java.awt.*;
 /**
  * Class implementing actual game logic
  */
-class GameLogic implements ViewMouseListener {
+class GameControllerImpl extends GameController {
 
     private final GameData data;
     private final GameDisplay display;
 
-    GameLogic(GameData data, GameDisplay display) {
+    GameControllerImpl(GameData data, GameDisplay display) {
+        super();
+
         this.data = data;
         this.display = display;
     }
@@ -38,48 +39,32 @@ class GameLogic implements ViewMouseListener {
                 && !isLargeCleared(largeRow, largeCol)
                 && !isCleared(event.getCell())) {
 
-            boolean doSetLP = setAndCheck(largeRow, largeCol, smallRow, smallCol, data.getTurn());
-            if (doSetLP) {
-                data.setLastPlayed(event);
-            }
-
-            data.nextTurn();
+            setAndCheck(largeRow, largeCol, smallRow, smallCol, data.getTurn());
 
             display.repaint();
         }
     }
 
-    private boolean setAndCheck(int largeRow, int largeCol, int smallRow, int smallCol, Clear clear) {
-        boolean setLP = true; // whether or not to set the last played event
-
+    private void setAndCheck(int largeRow, int largeCol, int smallRow, int smallCol, Clear clear) {
         GridData global = data.getGlobal();
         GridData grid = data.getGrid(largeRow, largeCol);
         CellData cell = grid.getCell(smallRow, smallCol);
 
         // set single clear
         cell.setClear(clear);
-        // if the destination cell is cleared, un-set last played
-        if (isLargeCleared(smallRow, smallCol)) {
-            data.setLastPlayed(null);
-            setLP = false;
-        }
 
         // set cell clear
         Clear largeClear = WinChecker.checkForWin(grid);
         grid.setClear(largeClear);
-        // if it did clear, un-set last played
         if (largeClear != Clear.EMPTY) {
-            data.setLastPlayed(null);
-            setLP = false;
+            fireGridWinEvent(new GridWinEvent(largeClear, largeRow, largeCol));
         }
 
         // set global clear
         Clear globalClear = WinChecker.checkForWin(global);
         global.setClear(globalClear);
-        // if it did clear, un-set last played
         if (globalClear != Clear.EMPTY) {
-            data.setLastPlayed(null);
-            setLP = false;
+            fireGlobalWinEvent(new GlobalWinEvent(globalClear));
         }
 
         //  check for a draw:
@@ -89,18 +74,25 @@ class GameLogic implements ViewMouseListener {
         if ((largeClear != Clear.EMPTY && global.getUnclearedCells() == 0 && globalClear == Clear.EMPTY)
                 || (global.getUnclearedCells() == 1 && grid.getUnclearedCells() == 0)) {
             global.setClear(Clear.DRAW);
-            data.setLastPlayed(null);
-            setLP = false;
         }
 
-        return setLP;
+        TurnData turn = new TurnData(
+                cell, clear,
+                largeRow, largeCol,
+                smallRow, smallCol,
+                // if the destination cell is already cleared, don't set the next
+                !isLargeCleared(smallRow, smallCol)
+        );
+
+        data.nextTurn(turn);
+        fireTurnEvent(new GameTurnEvent(turn));
     }
 
     private boolean isPlacedRight(int row, int col) {
-        CellClickedEvent lastPlayed = data.getLastPlayed();
-        return lastPlayed == null
-                || (lastPlayed.getSmallRow() == row
-                && lastPlayed.getSmallCol() == col);
+        TurnData lastPlayed = data.getLastTurn();
+        return lastPlayed == null || !lastPlayed.isNextOpen() ||
+                (lastPlayed.getSmallRow() == row
+                        && lastPlayed.getSmallCol() == col);
     }
 
     private boolean isCleared(CellData cell) {
@@ -127,10 +119,12 @@ class GameLogic implements ViewMouseListener {
         // or the game has already been won,
         // or we aren't in the correct grid,
         // or the cell has already been cleared,
+        // or the grid has already been cleared
         if (cell == null
                 || isWon()
                 || !isPlacedRight(row, col)
-                || isCleared(cell)) {
+                || isCleared(cell)
+                || isLargeCleared(row, col)) {
             // then set default cursor
             display.setCursor(Cursor.getDefaultCursor());
         } else {

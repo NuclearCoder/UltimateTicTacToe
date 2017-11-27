@@ -13,12 +13,9 @@ import java.awt.event.MouseMotionListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static ultimatettt.model.GameData.SIZE;
-import static ultimatettt.view.GameDisplay.*;
+import static ultimatettt.GameConstants.*;
 
 public class MouseHandler implements MouseListener, MouseMotionListener {
-
-    private static final CellHoveredEvent DEFAULT_HOVER_EVENT = new CellHoveredEvent(null, 0, 0, 0, 0);
 
     private final GameData data;
     private final List<ViewMouseListener> listeners;
@@ -28,39 +25,29 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
         this.listeners = new CopyOnWriteArrayList<>();
     }
 
+    /*
+    ensures x stays in [0..max]
+     */
+    private static int coerceUp(int x, int max) {
+        return Math.max(0, Math.min(max, x));
+    }
+
     private void handleClick(int x, int y) {
         EventData d = getCellDataOrNull(x, y);
         if (d == null) return;
-        fireClickedEvent(new CellClickedEvent(d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol));
+        fireClickedEvent(new CellClickedEvent(
+                d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol
+        ));
     }
 
     private void handleMove(int x, int y) {
         EventData d = getCellDataOrNull(x, y);
         fireHoveredEvent(d == null
                 ? DEFAULT_HOVER_EVENT
-                : new CellHoveredEvent(d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol));
-    }
-
-    private EventData getCellDataOrNull(int x, int y) {
-        int largeRow = coerceUp( (y - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
-        int largeCol = coerceUp((x - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
-        GridData grid = data.getGrid(largeRow, largeCol);
-
-        if (grid.contains(x, y)) {
-            int localX = (x - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
-            int localY = (y - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
-
-            int smallRow = coerceUp(localY / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
-            int smallCol = coerceUp(localX / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
-
-            ultimatettt.model.CellData cell = grid.getCell(smallRow, smallCol);
-
-            if (cell.contains(x, y)) {
-                return new EventData(cell, largeRow, largeCol, smallRow, smallCol);
-            }
-        }
-
-        return null;
+                        : new CellHoveredEvent(
+                        d.cell, d.largeRow, d.largeCol, d.smallRow, d.smallCol
+                )
+        );
     }
 
     public void addListener(ViewMouseListener listener) {
@@ -71,8 +58,26 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
         listeners.remove(listener);
     }
 
-    public void removeListeners() {
-        listeners.clear();
+    private EventData getCellDataOrNull(int x, int y) {
+        int largeRow = coerceUp((y - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
+        int largeCol = coerceUp((x - LARGE_BORDER) / (LARGE_CELL_SIZE + LARGE_BORDER), SIZE - 1);
+        GridData grid = data.getGrid(largeRow, largeCol);
+
+        if (grid.contains(x, y)) {
+            int localX = (x - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
+            int localY = (y - LARGE_BORDER) % (LARGE_CELL_SIZE + LARGE_BORDER);
+
+            int smallRow = coerceUp(localY / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
+            int smallCol = coerceUp(localX / (SMALL_CELL_SIZE + SMALL_BORDER), SIZE - 1);
+
+            CellData cell = grid.getCell(smallRow, smallCol);
+
+            if (cell.contains(x, y)) {
+                return new EventData(cell, largeRow, largeCol, smallRow, smallCol);
+            }
+        }
+
+        return null;
     }
 
     private void fireClickedEvent(CellClickedEvent event) {
@@ -87,8 +92,8 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
         }
     }
 
-    private static int coerceUp(int x, int max) {
-        return Math.max(0, Math.min(max, x));
+    public void removeAllListeners() {
+        listeners.clear();
     }
 
     // mouse methods

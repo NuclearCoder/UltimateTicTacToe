@@ -2,7 +2,7 @@ package ultimatettt.model;
 
 import java.awt.*;
 
-import static ultimatettt.model.GameDataImpl.SIZE;
+import static ultimatettt.GameConstants.SIZE;
 
 /**
  * Class to hold data for a large game grid (super-cell)

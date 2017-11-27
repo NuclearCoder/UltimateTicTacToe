@@ -1,16 +1,9 @@
 package ultimatettt.model;
 
-import ultimatettt.events.view.CellClickedEvent;
-
 /**
  * Model interface to hold game data.
  */
 public interface GameData {
-
-    /**
-     * Size of the grid (and sub-grids)
-     */
-    int SIZE = 3;
 
     /**
      * @param row the row in the board
@@ -37,25 +30,18 @@ public interface GameData {
     void setHovered(CellData cell);
 
     /**
-     * @return the state of last played move
-     */
-    CellClickedEvent getLastPlayed();
-
-    /**
-     * Sets the state of last played move
-     *
-     * @param lastPlayed new played move
-     */
-    void setLastPlayed(CellClickedEvent lastPlayed);
-
-    /**
      * @return the player for which it's the turn
      */
     Clear getTurn();
 
     /**
-     * Flips turn to the other player
+     * @return the previous turn data
      */
-    void nextTurn();
+    TurnData getLastTurn();
+
+    /**
+     * Flips turn to the other player, with the turn data
+     */
+    void nextTurn(TurnData turnData);
 
 }
