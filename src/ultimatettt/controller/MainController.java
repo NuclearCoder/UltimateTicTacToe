@@ -16,13 +16,15 @@ public class MainController {
     public MainController() {
         GameData data = GameDataFactory.createGameData();
         GameDisplay display = new GameDisplay(data);
-        GameController logic = new GameControllerImpl(data, display);
+        GameController logic = new GameController(data, display);
 
         MouseHandler mouseHandler = new MouseHandler(data);
         display.addMouseListener(mouseHandler);
         display.addMouseMotionListener(mouseHandler);
 
         mouseHandler.addListener(logic);
+
+        data.addListener(display);
 
         // TODO: hook up AI
 

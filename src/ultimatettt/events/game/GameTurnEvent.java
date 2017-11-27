@@ -1,6 +1,6 @@
 package ultimatettt.events.game;
 
-import ultimatettt.model.TurnData;
+import ultimatettt.model.data.TurnData;
 
 /**
  * Event for a turn

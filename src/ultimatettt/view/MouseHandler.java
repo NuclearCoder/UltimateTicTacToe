@@ -3,9 +3,9 @@ package ultimatettt.view;
 import ultimatettt.events.view.CellClickedEvent;
 import ultimatettt.events.view.CellHoveredEvent;
 import ultimatettt.events.view.ViewMouseListener;
-import ultimatettt.model.CellData;
 import ultimatettt.model.GameData;
-import ultimatettt.model.GridData;
+import ultimatettt.model.data.CellData;
+import ultimatettt.model.data.GridData;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

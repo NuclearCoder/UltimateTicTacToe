@@ -3,7 +3,7 @@ package ultimatettt.events.game;
 import ultimatettt.model.Clear;
 
 /**
- * Event for a grid win
+ * Event when a grid is won
  */
 public class GridWinEvent extends GenericGameWinEvent {
 

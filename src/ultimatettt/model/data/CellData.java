@@ -1,23 +1,46 @@
-package ultimatettt.model;
+package ultimatettt.model.data;
+
+import ultimatettt.model.Clear;
 
 import java.awt.*;
 
 /**
  * Class to hold data for a simple game cell (sub-cell)
  */
-public class CellData {
+public abstract class CellData {
+
+    protected final int row;
+    protected final int col;
 
     private Clear clear;
-    private Rectangle rect;
+    private final Rectangle rect;
 
     /**
      * Constructs a <code>CellData</code> instance.
      *
+     * @param row the row of this cell
+     * @param col the column of this cell
      * @param rect the boundaries of this cell
      */
-    CellData(Rectangle rect) {
+    protected CellData(int row, int col, Rectangle rect) {
+        this.row = row;
+        this.col = col;
         this.clear = Clear.EMPTY;
         this.rect = rect;
+    }
+
+    /**
+     * @return the row of this cell
+     */
+    public int getRow() {
+        return row;
+    }
+
+    /**
+     * @return the column of this cell
+     */
+    public int getCol() {
+        return col;
     }
 
     /**
@@ -55,10 +78,12 @@ public class CellData {
      *
      * @param x the x coordinate
      * @param y the y coordinate
-     * @return true iff the point (x;y) is in the cell
+     * @return true if and only if the point (x;y) is in the cell
      */
     public boolean contains(int x, int y) {
         return rect.contains(x, y);
     }
+
+    protected abstract void onClear(Clear clear);
 
 }

@@ -1,7 +1,7 @@
 package ultimatettt.events.view;
 
 import ultimatettt.events.Event;
-import ultimatettt.model.CellData;
+import ultimatettt.model.data.CellData;
 
 /**
  * Base event for cell

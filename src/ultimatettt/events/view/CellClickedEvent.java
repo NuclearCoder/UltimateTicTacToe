@@ -1,6 +1,6 @@
 package ultimatettt.events.view;
 
-import ultimatettt.model.CellData;
+import ultimatettt.model.data.CellData;
 
 /**
  * Event when a cell is clicked

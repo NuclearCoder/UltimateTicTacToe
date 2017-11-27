@@ -1,4 +1,6 @@
-package ultimatettt.model;
+package ultimatettt.model.data;
+
+import ultimatettt.model.Clear;
 
 import java.awt.*;
 
@@ -7,18 +9,20 @@ import static ultimatettt.GameConstants.SIZE;
 /**
  * Class to hold data for a large game grid (super-cell)
  */
-public class GridData extends CellData {
+public abstract class GridData extends CellData {
 
-    private CellData[][] grid;
+    protected final CellData[][] grid;
 
     /**
      * Constructs a <code>GridData</code> instance.
      *
+     * @param row the row of this grid
+     * @param col the column of this grid
      * @param rect the boundaries of this grid
      * @param grid the sub-grid this super-cell is composed of
      */
-    GridData(Rectangle rect, CellData[][] grid) {
-        super(rect);
+    protected GridData(int row, int col, Rectangle rect, CellData[][] grid) {
+        super(row, col, rect);
         this.grid = grid;
     }
 
@@ -31,12 +35,15 @@ public class GridData extends CellData {
         return grid[row][col];
     }
 
+    /**
+     * @return the number of cells that aren't cleared in this grid
+     */
     public int getUnclearedCells() {
         int sum = 0;
 
         for (int row = 0; row < SIZE; row++) {
             for (int col = 0; col < SIZE; col++) {
-                if (grid[row][col].getClear() != Clear.EMPTY) {
+                if (grid[row][col].getClear() == Clear.EMPTY) {
                     sum++;
                 }
             }

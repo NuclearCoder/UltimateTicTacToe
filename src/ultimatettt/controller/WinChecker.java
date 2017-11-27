@@ -1,7 +1,7 @@
 package ultimatettt.controller;
 
 import ultimatettt.model.Clear;
-import ultimatettt.model.GridData;
+import ultimatettt.model.data.GridData;
 
 import static ultimatettt.GameConstants.SIZE;
 

@@ -26,4 +26,11 @@ public interface GameListener {
      */
     void onGridWin(GridWinEvent event);
 
+    /**
+     * Responds to a cell hover
+     *
+     * @param event the corresponding event object
+     */
+    void onHover(CellHoverEvent event);
+
 }

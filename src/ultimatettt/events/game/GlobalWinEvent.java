@@ -3,7 +3,7 @@ package ultimatettt.events.game;
 import ultimatettt.model.Clear;
 
 /**
- * Event for a game win
+ * Event when the game is won
  */
 public class GlobalWinEvent extends GenericGameWinEvent {
 

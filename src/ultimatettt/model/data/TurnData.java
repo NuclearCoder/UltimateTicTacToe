@@ -1,4 +1,6 @@
-package ultimatettt.model;
+package ultimatettt.model.data;
+
+import ultimatettt.model.Clear;
 
 /**
  * Class to hold data for a game turn

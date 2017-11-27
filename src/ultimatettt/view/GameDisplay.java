@@ -1,9 +1,10 @@
 package ultimatettt.view;
 
-import ultimatettt.model.CellData;
+import ultimatettt.events.game.*;
 import ultimatettt.model.GameData;
-import ultimatettt.model.GridData;
-import ultimatettt.model.TurnData;
+import ultimatettt.model.data.CellData;
+import ultimatettt.model.data.GridData;
+import ultimatettt.model.data.TurnData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ import static ultimatettt.GameConstants.*;
 /**
  * Game display Swing component
  */
-public class GameDisplay extends JComponent {
+public class GameDisplay extends JComponent implements GameListener {
 
     private final GameData data;
 
@@ -89,5 +90,24 @@ public class GameDisplay extends JComponent {
         }
     }
 
+    @Override
+    public void onTurn(GameTurnEvent event) {
+        repaint();
+    }
+
+    @Override
+    public void onGlobalWin(GlobalWinEvent event) {
+        repaint();
+    }
+
+    @Override
+    public void onGridWin(GridWinEvent event) {
+        repaint();
+    }
+
+    @Override
+    public void onHover(CellHoverEvent event) {
+        repaint();
+    }
 
 }

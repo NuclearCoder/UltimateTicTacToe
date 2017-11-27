@@ -1,5 +1,10 @@
 package ultimatettt.model;
 
+import ultimatettt.events.game.GameListener;
+import ultimatettt.model.data.CellData;
+import ultimatettt.model.data.GridData;
+import ultimatettt.model.data.TurnData;
+
 /**
  * Model interface to hold game data.
  */
@@ -43,5 +48,20 @@ public interface GameData {
      * Flips turn to the other player, with the turn data
      */
     void nextTurn(TurnData turnData);
+
+    /**
+     * Adds a game listener
+     */
+    void addListener(GameListener listener);
+
+    /**
+     * Removes a game listener
+     */
+    void removeListener(GameListener listener);
+
+    /**
+     * Removes all game listeners
+     */
+    void removeAllListeners();
 
 }

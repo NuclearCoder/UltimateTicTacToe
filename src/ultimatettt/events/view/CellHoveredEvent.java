@@ -1,9 +1,9 @@
 package ultimatettt.events.view;
 
-import ultimatettt.model.CellData;
+import ultimatettt.model.data.CellData;
 
 /**
- * Event when a cell is being hovered
+ * Event when a cell is being hovered (by view)
  */
 public class CellHoveredEvent extends GenericCellEvent {
 
